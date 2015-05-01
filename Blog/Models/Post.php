@@ -34,6 +34,10 @@ class Post extends \Models\BaseModel{
         $statement = self::$db->prepare(
             "INSERT INTO posts (`title`, `date`, `content`, `user_id`) VALUES (?,?,?,?)",
             array($title, date('Y-m-d'), $content, $user_id))->execute();
-        return self::$db->getAffectedRows() > 0;
+
+        if (self::$db->getAffectedRows() > 0) {
+            return self::$db->getLastInsertId();
+        }
+        return false;
     }
 }

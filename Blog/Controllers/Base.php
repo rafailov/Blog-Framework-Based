@@ -15,7 +15,7 @@ class Base extends \GF\BaseController{
         if ($controller == null) {
             $controller = $this->controller;
         }
-        $url = "/$controller/$action";
+        $url = "/Blog-Framework/Blog/public/index.php/$controller/$action";
         $paramsUrlEncoded = array_map('urlencode', $params);
         $paramsJoined = implode('/', $paramsUrlEncoded);
         if ($paramsJoined != '') {
@@ -31,7 +31,10 @@ class Base extends \GF\BaseController{
 
 
     protected function isLoggedIn() {
-        return isset($_SESSION['username']);
+        if ($this->app->getSession()->usernames !== null) {
+            return true;
+        }
+        return false;
     }
 
     protected function authorize() {

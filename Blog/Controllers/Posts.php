@@ -29,31 +29,53 @@ class Posts extends \Controllers\Base
 
 	public function index()	{
 		$this->view->posts = $this->postModel->getAll();
-		$_SESSION['asd']='qwerty';
 		var_dump($_SESSION);
+		var_dump($this->isLoggedIn());
+		var_dump($this->isLoggedIn());
 		//todo add view
 		$this->view->appendToLayout('login','login');
 		$this->view->display('layouts.default');
+		echo "";
 	}
 
 	public function view(){
 		if ($this->inpData->hasGet(0)) {
 			$post_id = $this->inpData->get(0);
 			$this->view->currentPost = $this->postModel->find($post_id);
-
+			$this->view->title = $this->view->currentPost['title'];
 			//todo add view
-			$this->view->appendToLayout('login','login');
+			$this->view->appendToLayout('viewPost','viewPost');
 			$this->view->display('layouts.default');
 		}else{
-			header('Location: /Blog-Framework-Based.git/Blog/public/index.php/posts');
+			$this->redirect('posts');
 		}
 	}
 
 	public function add(){
-		if ($this->inpData->hasPost('title') ) {
-					# code...
-		}	
-		echo "<pre>".print_r($_SERVER,true)."</pre>";	
+		if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
+			$this->view->appendToLayout('addPostForm','addPost');
+			$this->view->display('layouts.default');
+
+		} else if ($this->inpData->hasPost('title') && $this->inpData->hasPost('content')) {
+
+			$title = $this->inpData->post('title');
+			$content = $this->inpData->post('content');
+
+			//todo add messages if crash
+			$insertedRow = $this->postModel->create($title,$content);
+			if ($insertedRow) {
+				$this->redirect('posts','view',array($insertedRow));
+			}
+			//todo fix this with add mesege and load prevision data
+			$this->redirect('posts','add');
+		}	else {
+			//todo return to form with messege
+		}
+	}
+
+	public function comment() {
+
 	}
 
 }

@@ -31,7 +31,7 @@ class Validation {
 		return (bool) !count($this->_errors);
 	}
 
-	public function getErrors($value='') {
+	public function getErrors() {
 		return $this->_errors;
 	}
 

@@ -52,7 +52,7 @@ class App
 
 		//If config folder is not set, use defaultone
 		if ($this->_config->getConfigFolder() == null){
-			$this->setConfigFolder('../config');
+			$this->setConfigFolder('config');
 		}
 
 		$this->_frontController = \GF\FrontController::getInstance();

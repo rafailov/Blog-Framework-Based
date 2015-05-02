@@ -17,7 +17,7 @@ class View
 	private function __construct(){
 		$this->___viewPath = \GF\APP::getInstance()->getConfig()->app['viewsDirectory'];
 		if ($this->___viewPath == null) {
-			$this->___viewPath = realpath('../views/');
+			$this->___viewPath = realpath('views/');
 		}
 	}
 

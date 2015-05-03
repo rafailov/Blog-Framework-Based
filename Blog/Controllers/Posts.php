@@ -11,6 +11,10 @@ class Posts extends \Controllers\Base
 	*/
 	private $postModel;
 	/**
+	*@var \Models\Tags
+	*/
+	private $tagModel;
+	/**
 	*@var \GF\View
 	*/
 	public $view;
@@ -23,6 +27,7 @@ class Posts extends \Controllers\Base
 	public function __construct(){
 		parent::__construct();
 		$this->postModel = new \Models\Post();
+		$this->tagModel = new \Models\Tags();
 		$this->view = \GF\View::getInstance();
 		$this->inpData = \GF\InputData::getInstance();
 	}
@@ -34,8 +39,7 @@ class Posts extends \Controllers\Base
 		var_dump($this->isLoggedIn());
 		//todo add view
 		$this->view->appendToLayout('login','login');
-		$this->view->display('layouts.default');
-		echo "";
+		$this->view->display('layouts.viewPost');
 	}
 
 	public function view(){
@@ -45,7 +49,7 @@ class Posts extends \Controllers\Base
 			$this->view->title = $this->view->currentPost['title'];
 			//todo add view
 			$this->view->appendToLayout('viewPost','viewPost');
-			$this->view->display('layouts.default');
+			$this->view->display('layouts.viewPost');
 		}else{
 			$this->redirect('posts');
 		}
@@ -53,9 +57,12 @@ class Posts extends \Controllers\Base
 
 	public function add(){
 		if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+			$this->view->tagsToAdd = $this->tagModel->getAll();
 
+			$this->view->appendToLayout('addedTags','addedTags');
+			$this->view->appendToLayout('tagsToAdd','tagsToAdd');
 			$this->view->appendToLayout('addPostForm','addPost');
-			$this->view->display('layouts.default');
+			$this->view->display('layouts.addPost');
 
 		} else if ($this->inpData->hasPost('title') && $this->inpData->hasPost('content')) {
 

@@ -15,7 +15,7 @@ class Base extends \GF\BaseController{
         if ($controller == null) {
             $controller = $this->controller;
         }
-        $url = "/Blog-Framework/Blog/public/index.php/$controller/$action";
+        $url = "/Blog-Framework/Blog/index.php/$controller/$action";
         $paramsUrlEncoded = array_map('urlencode', $params);
         $paramsJoined = implode('/', $paramsUrlEncoded);
         if ($paramsJoined != '') {

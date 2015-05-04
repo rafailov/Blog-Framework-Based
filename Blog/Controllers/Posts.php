@@ -65,18 +65,43 @@ class Posts extends \Controllers\Base
 			$this->view->display('layouts.addPost');
 
 		} else if ($this->inpData->hasPost('title') && $this->inpData->hasPost('content')) {
-
+			echo "ima title i content";
 			$title = $this->inpData->post('title');
 			$content = $this->inpData->post('content');
 
 			//todo add messages if crash
-			$insertedRow = $this->postModel->create($title,$content);
-			if ($insertedRow) {
-				$this->redirect('posts','view',array($insertedRow));
+			$insertedPostId = $this->postModel->create($title,$content);
+
+			if ($insertedPostId) {
+				//get tags and add to added post
+				if ($this->inpData->hasPost('tags')) {
+					$tags = explode(',',$this->inpData->post('tags'));
+					foreach ($tags as $value) {
+						echo "$value";
+						$tag = $this->tagModel->findByName($value);
+
+						if (!$tag) {
+							$tagId = $this->tagModel->create($value);
+						} else {
+							$tagId = intval($tag['id']); 
+						}
+
+						if ($tagId > 0) {
+							$this->tagModel->addTagToPost($tagId, $insertedPostId);
+						}
+					}
+				}else{
+					echo "nema tagove";
+				}
+				
+				$this->redirect('posts','view',array($insertedPostId));
+			} else {
+				echo "nqmame inserted post id";
 			}
 			//todo fix this with add mesege and load prevision data
-			$this->redirect('posts','add');
+			//$this->redirect('posts','add');
 		}	else {
+			echo "ne vleze nikydee";
 			//todo return to form with messege
 		}
 	}

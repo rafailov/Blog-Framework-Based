@@ -74,7 +74,7 @@
 <div class="control-group">
   <label class="control-label" for="textinput">Title :</label>
   <div class="controls">
-    <input id="textinput" name="textinput" type="text" placeholder="Post title..." class="input-xlarge">
+    <input id="textinput" name="title" type="text" placeholder="Post title..." class="input-xlarge">
   </div>
 </div>
 
@@ -82,7 +82,7 @@
 <div class="control-group">
   <label class="control-label" for="textarea">Content : </label>
   <div class="controls">                     
-    <textarea id="textarea" name="textarea"></textarea>
+    <textarea id="textarea" name="content"></textarea>
   </div>
 </div>
 
@@ -100,7 +100,7 @@
 <!-- Button (Double) -->
 <div class="control-group">
   <div class="controls">
-  <a href="/Blog-Framework/Blog/public/index.php/posts" class="btn btn-danger">Cancel</a>
+  <a href="/Blog-Framework/Blog/index.php/posts" class="btn btn-danger">Cancel</a>
   <span class="btn btn-success">ADD POST</span>
   </div>
 </div>

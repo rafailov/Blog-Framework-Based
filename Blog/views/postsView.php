@@ -131,7 +131,6 @@ function setLiClass() {
             if (is_array($this->posts)) {
                 foreach ($this->posts as $key => $value) {
                     ?>
-                    <pre><?php echo print_r($value,true); ?></pre>
                    <?php echo '<a href="http://localhost:3210/Blog-Framework/Blog/index.php/posts/view/'.htmlentities($value['id']).'/" >';?>
                     <div class="thumbnail">
                         <div class="caption-full">
@@ -149,8 +148,8 @@ function setLiClass() {
                         <div class="ratings">
                             <p class="pull-right">
                        
-                               <?=htmlentities($value['likes']);?> <span>likes</span>
-                               <?=htmlentities($value['dislikes']);?> <span>dislikes</span>
+                               <span style="color:green;" ><?=htmlentities($value['likes']);?> likes </span>  
+                               <span > <?=htmlentities($value['dislikes']);?> dislikes</span>
 
                             </p>
                             <br />

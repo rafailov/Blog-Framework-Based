@@ -46,7 +46,10 @@ footer {
  $(document).ready(function () {
     $('.tagToAdd').click(function(){
         $(this).toggleClass('selected'); 
-        refreshPostList()
+        refreshPostList();
+    })
+     $('input[name=dateFilter]').click(function(){
+        refreshPostList();
     })
  })
 //var arr = $('input[name=filteredTags]').val().split(",")
@@ -69,7 +72,7 @@ footer {
     }else{
         var selectedTags = [selectedTag];
     }
-    var selectedDate = $('input[name=dateFilter]').innerHTML;
+    var selectedDate = $('input[name="dateFilter"]').val();
     $.ajax({
        
        url:"http://localhost:3210/Blog-Framework/Blog/index.php/posts",
@@ -86,26 +89,23 @@ footer {
     }).fail(function(){
        alert("failed");
     })
-
-    function setLiClass() {
-        var oldTags = $('input[name=filteredTags]').val();
-        var arr = oldTags.split(",");
-        $('li.brevisionTag').toggleClass('brevisionTag');
-        for (var i = 0; i < arr.length; i++) {
-        $('li.tagToAdd').each(function () {
-            console.log();
-            if ($(this).text() == arr[i]) {
-
-            $(this).toggleClass('brevisionTag');
-            }
-        })
-            
-        }
-    }
-
-
  }
 
+function setLiClass() {
+    var oldTags = $('input[name=filteredTags]').val();
+    var arr = oldTags.split(",");
+    $('li.brevisionTag').toggleClass('brevisionTag');
+    for (var i = 0; i < arr.length; i++) {
+    $('li.tagToAdd').each(function () {
+        console.log();
+        if ($(this).text() == arr[i]) {
+
+        $(this).toggleClass('brevisionTag');
+        }
+    })
+        
+    }
+}
  </script>
 
 <!-- Page Content -->
@@ -117,7 +117,11 @@ footer {
             <p class="lead">Filter</p>
                 <div>
                   <div class="input-append">
-                    <input type="date" name="dateFilter" />
+                    <input type="date" name="dateFilter" 
+                    <?php if ($_POST['tags']) {
+                      echo 'value="'.$_POST['date'].'"';
+                    }?> 
+                   />
                   </div>
                 </div>
         </div>
@@ -127,10 +131,11 @@ footer {
             if (is_array($this->posts)) {
                 foreach ($this->posts as $key => $value) {
                     ?>
+                    <pre><?php echo print_r($value,true); ?></pre>
                    <?php echo '<a href="http://localhost:3210/Blog-Framework/Blog/index.php/posts/view/'.htmlentities($value['id']).'/" >';?>
                     <div class="thumbnail">
                         <div class="caption-full">
-                            <h4 class="pull-right"><?=htmlentities($value['views']);?><?=htmlentities($value['views']);?> views</h4>
+                            <h4 class="pull-right"><?=htmlentities($value['views']);?> views</h4>
                             <h3><?=htmlentities($value['title']);?></h3>
                             <span>
                                 <?php

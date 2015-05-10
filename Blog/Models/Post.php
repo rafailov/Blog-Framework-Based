@@ -10,30 +10,47 @@ class Post extends \Models\BaseModel{
 	public function __construct(){
 		parent::__construct();
 	}
+
  	public function getAll() {
         $input =  \GF\InputData::getInstance();
         $tagModel = new \Models\Tag();
-        if ($input->hasPost('tags')) {
-            $setedTags = explode(',',$input->post('tags'));
-            if (is_array($setedTags)) {
-                $where = '';
-                foreach ($setedTags as $key => $value) {
-                    $findedTagId = $tagModel->findByName($value);
-                    if ($findedTagId > 0) {
-                        if ($where != '') {
-                           $where .= ' AND';
-                        }
-                         $where .= ' pt.tag_id = '. $findedTagId['id']. ' '; 
-                    }
-                }
-                $sql = 'SELECT * FROM `post_tags` as pt join `posts` as p ON pt.post_id = p.id WHERE '. $where;
-                echo "<h3>".$sql."</h3>";
-                $statement = self::$db->prepare($sql)->execute()->fetchAllAssoc();
-                return $statement;
-            }
-        }
-        $statement = self::$db->prepare('SELECT * FROM `posts`')->execute()->fetchAllAssoc();
+        $sql = 'SELECT p.id,p.views, p.title, p.user_id, p.date, p.likes, p.dislikes FROM `posts` as p ';
+        $setedTags = null;
 
+        if ($input->hasPost('tags')) $setedTags = explode(',',$input->post('tags'));
+
+        if (is_array($setedTags)) {
+            $findedTagsId = array();
+            $where = '';
+
+            foreach ($setedTags as $key => $value) {
+                $findedTagId = $tagModel->findByName($value);
+                if ($findedTagId > 0) {
+                    if ($where != '') {
+                       $where .= ' OR';
+                    }
+
+                    $where .= ' pt.tag_id = '. $findedTagId['id']. ' '; 
+                }
+            }
+            $sql .= ' join `post_tags` as pt ON pt.post_id = p.id WHERE ' . $where;
+        }
+
+        if ($input->hasPost('date')) {
+            $date = $input->post('date');
+
+            if ($where != '') {
+               $where = ' OR';
+            } else {
+                $where = ' WHERE';
+            }
+            $where .= ' p.date = "'. $date. '" ';
+
+            $sql .= $where; 
+
+        }
+
+        $statement = self::$db->prepare($sql)->execute()->fetchAllAssoc();
         return $statement;
     }
 
@@ -61,6 +78,9 @@ class Post extends \Models\BaseModel{
         }
         return false;
     }
+
+
+
     public function countView($id)   {
         if (!isset($id) || $id < 0) {
             return false;

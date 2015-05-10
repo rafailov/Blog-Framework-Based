@@ -18,6 +18,10 @@ class Posts extends \Controllers\Base
 	*@var \Models\User
 	*/
 	private $userModel;
+	/**
+	*@var \Models\Comment
+	*/
+	private $commentModel;
 
 
 	public function __construct(){
@@ -25,6 +29,7 @@ class Posts extends \Controllers\Base
 		$this->postModel = new \Models\Post();
 		$this->tagModel = new \Models\Tag();
 		$this->userModel = new \Models\User();
+		$this->commentModel = new \Models\COmment();
 	}
 
 	public function index()	{
@@ -40,6 +45,7 @@ class Posts extends \Controllers\Base
 		if ($this->input->hasGet(0)) {
 			$post_id = $this->input->get(0);
 			$this->view->currentPost = $this->postModel->find($post_id);
+			$this->postModel->countView($this->view->currentPost['id']);
 
 			$byUserId = $this->view->currentPost['user_id'];
 			if ($byUserId) {
@@ -50,8 +56,9 @@ class Posts extends \Controllers\Base
 				}
 			}
 
+			$this->view->currentPostComments = $this->commentModel->listComments($post_id);
+
 			$this->view->currentPostTags = $this->tagModel->getTagsForPost($post_id);
-			//todo add view
 			$this->view->appendToLayout('viewPost','viewPost');
 			$this->view->display('layouts.viewPost');
 		}else{
@@ -110,7 +117,16 @@ class Posts extends \Controllers\Base
 	}
 
 	public function comment() {
+		if ($this->input->hasPost('commentContent') && $this->input->hasPost('postId')) {
+			$commentContent = $this->input->post('commentContent');
+			$postId = $this->input->post('postId');
 
+			$this->commentModel->addCommentToPost($commentContent, $postId, $this->app->getSession()->userId);
+			
+			$this->view->currentPostComments = $this->commentModel->listComments($postId);
+		}else {
+			//TOOD
+		}
 	}
 
 }

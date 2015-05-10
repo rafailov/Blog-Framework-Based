@@ -16,10 +16,17 @@
     	.content{
     		margin-top: 50px;
     	}
+    body
+    {
+        background-color:rgba(204, 204, 204, 0.48);
+        margin: 0;
+        min-width: 1300px;
+    }
     </style>
 </head>
 <body>
-
+<div id="comment" style="display: none">
+</div>
 <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -51,6 +58,7 @@
 
 ?>
 </div>
+
 <div class="container">
 
     <hr>

@@ -31,6 +31,33 @@ footer {
 }
 
  </style>
+ <script type="text/javascript">
+  function refreshPostList() {
+    var comment = $('textarea[name=commentContent]').val();
+    var postId = $('input[name=postId]').val();
+    
+    $('textarea[name=commentContent]').val('');
+
+    if (comment == '') return false;
+
+    $.ajax({
+       
+       url:"http://localhost:3210/Blog-Framework/Blog/index.php/posts/comment",
+       type:"POST",
+       dataType: "html",
+       data:{
+          commentContent: comment,
+          postId: postId,
+       }
+       
+    }).done(function(data){
+       $('#comment').html(data);
+       alert('your tag is added');
+    }).fail(function(){
+       alert("failed");
+    })
+ }
+ </script>
 
 <!-- Page Content -->
 <div class="container">
@@ -38,17 +65,13 @@ footer {
     <div class="row">
 
         <div class="col-md-3">
-            <p class="lead">Shop Name</p>
-            <div class="list-group">
-                <a href="#" class="list-group-item active">Category 1</a>
-                <a href="#" class="list-group-item">Category 2</a>
-                <a href="#" class="list-group-item">Category 3</a>
-            </div>
+
         </div>
 
         <div class="col-md-9">
             <div class="thumbnail">
                 <div class="caption-full">
+                    <input type="hidden" name="postId" <?=' value="'.htmlentities($this->currentPost["id"]).'"';?>/>
                     <h4 class="pull-right"><?=htmlentities($this->currentPost['views']);?> views</h4>
                     <h3><?=htmlentities($this->currentPost['title']);?></h3>
                     <span>
@@ -83,53 +106,37 @@ footer {
             <div class="well">
 
                 <div class="text-right">
-                    <a class="btn btn-success">Leave a Review</a>
+                    <a class="btn btn-success" onclick="refreshPostList()" id='addComment'>Leave a Review</a>
                 </div>
+
+            
+                    <textarea style="width: 80%; height: 100px" name="commentContent"></textarea>
 
                 <hr>
+                <?php if (is_array($this->currentPostComments)): ?>                 
+                    <?php foreach ($this->currentPostComments as $key => $value): ?>
+                      <div class="row">
+                            <div class="col-md-12">
+                                <?php 
+                                if ($value['authorUser_id'] > 0){ 
+                                    echo 'by user :'.$value['username'];
+                                }elseif (strlen($value['author_name']) > 0){
+                                    echo 'by guest :'.$value['author_name'];
+                                } else{
+                                    echo "Anonymous";
+                                } 
+                                ?>
+                                
+                                <span class="pull-right"><?=$value['date']?></span>
+                                <p><?=$value['content']?></p>
+                            </div>
+                        </div>
+                        <hr>
+                    <?php endforeach ?>
+                <?php endif ?>
 
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star-empty"></span>
-                        Anonymous
-                        <span class="pull-right">10 days ago</span>
-                        <p>This product was great in terms of quality. I would definitely buy another!</p>
-                    </div>
-                </div>
 
-                <hr>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star-empty"></span>
-                        Anonymous
-                        <span class="pull-right">12 days ago</span>
-                        <p>I've alredy ordered another one!</p>
-                    </div>
-                </div>
-
-                <hr>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star"></span>
-                        <span class="glyphicon glyphicon-star-empty"></span>
-                        Anonymous
-                        <span class="pull-right">15 days ago</span>
-                        <p>I've seen some better than this, but not at this price. I definitely recommend this item.</p>
-                    </div>
-                </div>
+                
 
             </div>
 
@@ -140,9 +147,3 @@ footer {
 </div>
 <!-- /.container -->
 
-
-<?php 
-echo "<h1>POST</h1>";
-echo "<pre>".print_r($this->currentPost,true)."</pre>";
-echo "<h1>Tags</h1>";
-echo "<pre>".print_r($this->currentPostTags,true)."</pre>";

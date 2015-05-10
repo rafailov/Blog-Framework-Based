@@ -21,7 +21,6 @@
 
   <ul>
   	<?php
-            echo "<pre>".print_r($_POST,true)."</pre>";
   	
   		foreach ($this->tagsToAdd as $key => $value) {
   			echo "<li class='tagToAdd' >".$value['tag']."</li>";

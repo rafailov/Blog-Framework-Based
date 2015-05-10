@@ -34,8 +34,8 @@
 		color: white;
 	}
 </style>
-	<script type="text/javascript">
 
+<script type="text/javascript">
 	function submitPostForm (addedTagsArray) {
 		var addedTagsJson = JSON.parse(JSON.stringify(addedTagsArray));
 		var input = document.createElement("input");
@@ -79,7 +79,7 @@
 			console.log(addedTagsArray);
 		});
 	});
-	</script>
+</script>
 <body>
 	<div>
 		<div id="PostFormDiv">

@@ -5,6 +5,6 @@
 		list-style-image: url("../../views/red-x-icon.png");
 	}
 </style>
-<h2>Your added tags</h2>
+<h3>Your added tags</h3>
 <ul id="addedUlTags">
 </ul>

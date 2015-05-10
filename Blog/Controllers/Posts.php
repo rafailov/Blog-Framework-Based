@@ -7,46 +7,50 @@ namespace Controllers;
 class Posts extends \Controllers\Base
 {
 	/**
-	*@var \Models\Posts
+	*@var \Models\Post
 	*/
 	private $postModel;
 	/**
-	*@var \Models\Tags
+	*@var \Models\Tag
 	*/
 	private $tagModel;
 	/**
-	*@var \GF\View
+	*@var \Models\User
 	*/
-	public $view;
-	/**
-	*@var \GF\InputData
-	*/
-	private $inpData;
+	private $userModel;
 
 
 	public function __construct(){
 		parent::__construct();
 		$this->postModel = new \Models\Post();
-		$this->tagModel = new \Models\Tags();
-		$this->view = \GF\View::getInstance();
-		$this->inpData = \GF\InputData::getInstance();
+		$this->tagModel = new \Models\Tag();
+		$this->userModel = new \Models\User();
 	}
 
 	public function index()	{
 		$this->view->posts = $this->postModel->getAll();
-		var_dump($_SESSION);
-		var_dump($this->isLoggedIn());
-		var_dump($this->isLoggedIn());
+			$this->view->tagsToAdd = $this->tagModel->getAll();
 		//todo add view
-		$this->view->appendToLayout('login','login');
+		$this->view->appendToLayout('tagsToAdd','tagsToAdd');
+		$this->view->appendToLayout('posts','postsView');
 		$this->view->display('layouts.viewPost');
 	}
 
 	public function view(){
-		if ($this->inpData->hasGet(0)) {
-			$post_id = $this->inpData->get(0);
+		if ($this->input->hasGet(0)) {
+			$post_id = $this->input->get(0);
 			$this->view->currentPost = $this->postModel->find($post_id);
-			$this->view->title = $this->view->currentPost['title'];
+
+			$byUserId = $this->view->currentPost['user_id'];
+			if ($byUserId) {
+				$addedBy = $this->userModel->find($byUserId);
+
+				if ($addedBy['username']) {
+					$this->view->byUsername = $addedBy['username'];
+				}
+			}
+
+			$this->view->currentPostTags = $this->tagModel->getTagsForPost($post_id);
 			//todo add view
 			$this->view->appendToLayout('viewPost','viewPost');
 			$this->view->display('layouts.viewPost');
@@ -56,6 +60,7 @@ class Posts extends \Controllers\Base
 	}
 
 	public function add(){
+		self::authorize();
 		if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 			$this->view->tagsToAdd = $this->tagModel->getAll();
 
@@ -64,20 +69,18 @@ class Posts extends \Controllers\Base
 			$this->view->appendToLayout('addPostForm','addPost');
 			$this->view->display('layouts.addPost');
 
-		} else if ($this->inpData->hasPost('title') && $this->inpData->hasPost('content')) {
-			echo "ima title i content";
-			$title = $this->inpData->post('title');
-			$content = $this->inpData->post('content');
+		} else if ($this->input->hasPost('title') && $this->input->hasPost('content')) {
+			$title = $this->input->post('title');
+			$content = $this->input->post('content');
 
 			//todo add messages if crash
-			$insertedPostId = $this->postModel->create($title,$content);
+			$insertedPostId = $this->postModel->create($title,$content, $this->app->getSession()->userId);
 
 			if ($insertedPostId) {
 				//get tags and add to added post
-				if ($this->inpData->hasPost('tags')) {
-					$tags = explode(',',$this->inpData->post('tags'));
+				if ($this->input->hasPost('tags')) {
+					$tags = explode(',',$this->input->post('tags'));
 					foreach ($tags as $value) {
-						echo "$value";
 						$tag = $this->tagModel->findByName($value);
 
 						if (!$tag) {
@@ -91,17 +94,17 @@ class Posts extends \Controllers\Base
 						}
 					}
 				}else{
-					echo "nema tagove";
+					//no one tags
 				}
 				
 				$this->redirect('posts','view',array($insertedPostId));
 			} else {
-				echo "nqmame inserted post id";
+				//post isnt inserted
 			}
 			//todo fix this with add mesege and load prevision data
 			//$this->redirect('posts','add');
 		}	else {
-			echo "ne vleze nikydee";
+			
 			//todo return to form with messege
 		}
 	}

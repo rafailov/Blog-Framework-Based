@@ -67,10 +67,8 @@
 <form class="addPostForm" id="addPostForm"  method="POST" action="/Blog-Framework/Blog/index.php/posts/add">
 <fieldset>
 
-<!-- Form Name -->
 <legend>ADD POST</legend>
 
-<!-- Text input-->
 <div class="control-group">
   <label class="control-label" for="textinput">Title :</label>
   <div class="controls">
@@ -78,7 +76,6 @@
   </div>
 </div>
 
-<!-- Textarea -->
 <div class="control-group">
   <label class="control-label" for="textarea">Content : </label>
   <div class="controls">                     
@@ -86,18 +83,16 @@
   </div>
 </div>
 
-<!-- Appended Input-->
 <div class="control-group">
   <label class="control-label" for="appendedtag">Add NEW tag :</label>
   <div class="controls">
     <div class="input-append">
-      <input id="appendedtag" name="appendedtag" class="input-xlarge" placeholder="You can add new tag" type="text">
+      <input id="appendedtag" name="appendedtag" onkeypress='return event.charCode != 32' class="input-xlarge" placeholder="You can add new tag" type="text">
       <span class="add-on">+</span>
     </div>
   </div>
 </div>
 
-<!-- Button (Double) -->
 <div class="control-group">
   <div class="controls">
   <a href="/Blog-Framework/Blog/index.php/posts" class="btn btn-danger">Cancel</a>

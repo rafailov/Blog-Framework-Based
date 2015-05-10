@@ -5,21 +5,21 @@ namespace Models;
 /**
 * 
 */
-class Tags extends \Models\BaseModel{
+class Tag extends \Models\BaseModel{
 
 	public function __construct(){
 		parent::__construct();
 	}
  	public function getAll() {
- 		$statement = self::$db->prepare('SELECT `id`,`tag` FROM `tags` ORDER BY `popularity` DESC')->execute()->fetchAllAssoc();
+ 		$statement = self::$db->prepare('SELECT `id`,`tag` FROM `tags` ORDER BY `popularity` DESC')->execute();
 
-        return $statement;
+        return $statement->fetchAllAssoc();
     }
 
     public function find($id) {
         $statement = self::$db->prepare('SELECT `tag` FROM `tags` WHERE id=?',
-                 array($id))->execute()->fetchRowAssoc();
-        return $statement;
+                 array($id))->execute();
+        return $statement->fetchRowAssoc();
     }
 
     public function findByName($name) {
@@ -32,6 +32,8 @@ class Tags extends \Models\BaseModel{
         if (!isset($tagName) && $tagName == '' && $tagName == null) {
             return false;
         }
+
+        $tagName = ucfirst(str_replace(" ","",$tagName));
 
         $statement = self::$db->prepare(
             "INSERT INTO tags (`tag`) VALUES (?)",
@@ -64,6 +66,12 @@ class Tags extends \Models\BaseModel{
         }
 
         return false;
+    }
 
+    public function getTagsForPost($post_id) {
+        $statement = self::$db->prepare('SELECT t.id,t.tag 
+                                        FROM `post_tags` as pt JOIN `tags` as t ON t.id = pt.tag_id        
+                                        WHERE pt.post_id = ? order by popularity DESC',array($post_id))->execute();
+        return $statement->fetchAllAssoc();
     }
 }

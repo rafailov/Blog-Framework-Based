@@ -31,7 +31,7 @@ class Base extends \GF\BaseController{
 
 
     protected function isLoggedIn() {
-        if ($this->app->getSession()->usernames !== null) {
+        if ($this->app->getSession()->username !== null) {
             return true;
         }
         return false;

@@ -33,7 +33,11 @@ class InputData {
 	}
 
 	public function hasPost($name) {
-		return array_key_exists($name, $this->_post);
+
+		if (array_key_exists($name, $this->_post) && strlen($this->_post[$name]) > 0){
+			return true;
+		}
+		return false;
 	}
 
 	public function hasCookies($name) {
